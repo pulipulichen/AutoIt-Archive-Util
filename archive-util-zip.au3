@@ -9,3 +9,5 @@
 addArchive('zip')
 
 ;MsgBox($MB_SYSTEMMODAL, "", GetFileNameNoExt("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A.zip"))
+
+;FileMove("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\AA A.txt\AA A.txt", @WorkingDir)

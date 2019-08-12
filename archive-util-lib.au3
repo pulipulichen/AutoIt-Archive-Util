@@ -45,7 +45,11 @@ Func addArchive($archiveFormat)
 	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
 	  ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $sFileName)
-	  $archiveFilename = GetFileNameNoExt($CmdLine[1])
+	  If StringInStr(FileGetAttrib($CmdLine[1]), "D") Then
+		 $archiveFilename = GetFileNameNoExt($CmdLine[1])
+	  Else
+		 $archiveFilename = GetFileName($CmdLine[1])
+	  EndIf
    Else
 	  ;MsgBox($MB_SYSTEMMODAL, "", "many files")
 	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
@@ -106,7 +110,7 @@ Func addArchive($archiveFormat)
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
-   RunWait($cmd, '', @SW_HIDE)
+   RunWait($cmd, '')
 
    ; ------------------------------------
 
@@ -145,11 +149,16 @@ Func GetDir($sFilePath)
 
     Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
 	If StringInStr(FileGetAttrib($sFilePath), "D") = False And StringInStr($FileName, '.') Then
-	  $pos = StringInStr ($FileName, '.', 2, -1)
-	  $FileName = StringTrimRight($FileName, StringLen($FileName) - $pos + 1)
+	  $FileName = StripExt($FileName)
 	EndIf
 
     Return $FileName
+EndFunc
+
+Func StripExt($FileName)
+   $pos = StringInStr ($FileName, '.', 2, -1)
+   $FileName = StringTrimRight($FileName, StringLen($FileName) - $pos + 1)
+   Return $FileName
 EndFunc
 
 ; ------------------------------------
@@ -178,7 +187,7 @@ Func unarchive()
 
    ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
    ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
-   $sFileName = GetFileNameNoExt($CmdLine[1])
+   $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
 
    If FileExists($sFileName) = False Then
 	  DirCreate($sFileName)
@@ -192,7 +201,7 @@ Func unarchive()
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
-   RunWait($cmd, '', @SW_HIDE)
+   RunWait($cmd, '')
 
    ; ------------------------------
    FileRecycle($file)
@@ -213,15 +222,15 @@ Func uniqueDir($sFileName)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", @WorkingDir)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $sFileName)
    Local $fileList = _FileListToArray($sFileName)
-   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
+   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList[1])
    If $fileList = False Then
 	  Exit
    ElseIf $fileList[0] > 1 Then
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
 	  Return
-   ElseIf $fileList[1] = $sFileName Then
-	  ;MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
+   ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") And $fileList[1] = $sFileName Then
+	  ;MsgBox($MB_SYSTEMMODAL, "dir", $fileList[1])
 
 	  Local $subFileList = _FileListToArray($sFileName & '/' & $sFileName)
 	  For $i = 1 To $subFileList[0]
@@ -245,10 +254,10 @@ Func uniqueDir($sFileName)
 	  Next
 	  FileRecycle($sFileName & '/' & $sFileName)
 	  uniqueDir($sFileName)
-   ElseIf StringInStr(FileGetAttrib($fileList[1]), "D") = False Then
+   ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") = False Then
 	  ; 單一檔案
 	  Local $source = $sFileName & '/' & $fileList[1]
-	  Local $dist = "./"
+	  Local $dist = @WorkingDir
 	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source)
 	  FileMove($source, $dist)
 	  DirRemove($sFileName)
