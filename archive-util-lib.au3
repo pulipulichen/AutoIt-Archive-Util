@@ -156,8 +156,10 @@ Func GetDir($sFilePath)
 EndFunc
 
 Func StripExt($FileName)
-   $pos = StringInStr ($FileName, '.', 2, -1)
-   $FileName = StringTrimRight($FileName, StringLen($FileName) - $pos + 1)
+   If StringInStr($FileName, '.') Then
+	  $pos = StringInStr ($FileName, '.', 2, -1)
+	  $FileName = StringTrimRight($FileName, StringLen($FileName) - $pos + 1)
+   EndIf
    Return $FileName
 EndFunc
 
