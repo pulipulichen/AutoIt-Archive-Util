@@ -210,9 +210,13 @@ Func uniqueDir($sFileName)
 	  Return
    EndIf
 
+
+   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $sFileName)
    Local $fileList = _FileListToArray($sFileName)
-   If $fileList[0] = 0 Or $fileList[0] > 1 Then
-	  Return
+   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
+   If $fileList = False Or $fileList[0] > 1 Then
+	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
+	  Exit
    ElseIf $fileList[1] = $sFileName Then
 	  ;MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
 

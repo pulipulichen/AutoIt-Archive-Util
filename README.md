@@ -18,6 +18,8 @@ archive-util-zip.exe "D:\Desktop\20190806 移除不使用的應用程式\test\AA
 
 archive-util-zip.exe "D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A"
 
+archive-util-zip.exe "D:\Desktop\20190806 移除不使用的應用程式\test\.AA A"
+
 ----
 # Resources
 
