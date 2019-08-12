@@ -5,6 +5,7 @@
 #include <Array.au3>
 #pragma compile(Icon, 'archive.ico')
 
+Local $archiveFormat = 'zip'
 
 ; ----------------------------------
 
@@ -53,7 +54,7 @@ Func addArchive()
 
    ; ------------------------------------
 
-   Local $cmd = $path7z & '  a -tzip ' & $archiveFilename & '.zip' & $fileList
+   Local $cmd = $path7z & '  a -t' & $archiveFormat & ' -mx=9 ' & $archiveFilename & '.zip' & $fileList
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    RunWait($cmd)
 
