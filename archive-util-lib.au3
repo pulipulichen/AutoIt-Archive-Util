@@ -45,7 +45,7 @@ Func addArchive($archiveFormat)
 	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
 	  ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $sFileName)
-	  $archiveFilename = GetFileName($CmdLine[1])
+	  $archiveFilename = GetFileNameNoExt($CmdLine[1])
    Else
 	  ;MsgBox($MB_SYSTEMMODAL, "", "many files")
 	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
@@ -102,6 +102,7 @@ Func addArchive($archiveFormat)
 
    Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
+   ;MsgBox($MB_SYSTEMMODAL, "", @WorkingDir)
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
@@ -135,6 +136,20 @@ Func GetDir($sFilePath)
     Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
 
     Return $FileName
+ EndFunc
+
+ Func GetFileNameNoExt($sFilePath)
+    If Not IsString($sFilePath) Then
+        Return SetError(1, 0, -1)
+    EndIf
+
+    Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
+	If StringInStr(FileGetAttrib($sFilePath), "D") = False And StringInStr($FileName, '.') Then
+	  $pos = StringInStr ($FileName, '.', 2, -1)
+	  $FileName = StringTrimRight($FileName, StringLen($FileName) - $pos + 1)
+	EndIf
+
+    Return $FileName
 EndFunc
 
 ; ------------------------------------
@@ -161,8 +176,9 @@ Func unarchive()
 
    ; ----------------------------
 
-   Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
-   Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
+   ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
+   ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
+   $sFileName = GetFileNameNoExt($CmdLine[1])
 
    If FileExists($sFileName) = False Then
 	  DirCreate($sFileName)
@@ -186,6 +202,8 @@ Func unarchive()
    uniqueDir($sFileName)
 
 EndFunc
+
+; --------------------------------
 
 Func uniqueDir($sFileName)
    If StringInStr(FileGetAttrib($sFileName), "D") = False Then

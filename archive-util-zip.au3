@@ -7,3 +7,5 @@
 #pragma compile(Icon, 'icons/zip.svg.ico')
 
 addArchive('zip')
+
+;MsgBox($MB_SYSTEMMODAL, "", GetFileNameNoExt("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A.zip"))
