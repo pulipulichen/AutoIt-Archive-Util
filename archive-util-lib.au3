@@ -123,36 +123,36 @@ EndFunc
 ; ------------------------------------
 
 Func GetDir($sFilePath)
-    If Not IsString($sFilePath) Then
-        Return SetError(1, 0, -1)
-    EndIf
+   If Not IsString($sFilePath) Then
+	 Return SetError(1, 0, -1)
+   EndIf
 
-    Local $FileDir = StringRegExpReplace($sFilePath, "\\[^\\]*$", "")
+   Local $FileDir = StringRegExpReplace($sFilePath, "\\[^\\]*$", "")
 
-    Return $FileDir
- EndFunc
+   Return $FileDir
+EndFunc
 
- Func GetFileName($sFilePath)
-    If Not IsString($sFilePath) Then
-        Return SetError(1, 0, -1)
-    EndIf
+Func GetFileName($sFilePath)
+   If Not IsString($sFilePath) Then
+	 Return SetError(1, 0, -1)
+   EndIf
 
-    Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
+   Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
 
-    Return $FileName
- EndFunc
+   Return $FileName
+EndFunc
 
- Func GetFileNameNoExt($sFilePath)
-    If Not IsString($sFilePath) Then
-        Return SetError(1, 0, -1)
-    EndIf
+Func GetFileNameNoExt($sFilePath)
+ If Not IsString($sFilePath) Then
+	 Return SetError(1, 0, -1)
+ EndIf
 
-    Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
-	If StringInStr(FileGetAttrib($sFilePath), "D") = False And StringInStr($FileName, '.') Then
-	  $FileName = StripExt($FileName)
-	EndIf
+ Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
+ If StringInStr(FileGetAttrib($sFilePath), "D") = False And StringInStr($FileName, '.') Then
+   $FileName = StripExt($FileName)
+ EndIf
 
-    Return $FileName
+ Return $FileName
 EndFunc
 
 Func StripExt($FileName)
