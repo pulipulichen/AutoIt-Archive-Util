@@ -13,14 +13,6 @@ Func addArchive()
    ; ----------------------------------
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
 
-   ; ----------------------------------
-   ; 建立列表
-   Local $fileList = ""
-   For $i = 1 To $CmdLine[0]
-	  If FileExists($CmdLine[$i]) Then
-		 $fileList = $fileList & ' "' & $CmdLine[$i] & '"'
-	  EndIf
-   Next
    ;MsgBox($MB_SYSTEMMODAL, "", $fileList)
 
    ;MsgBox($MB_SYSTEMMODAL, "", $path7z)
@@ -28,6 +20,7 @@ Func addArchive()
    ; ----------------------------------
 
    Local $archiveFilename
+   Local $workingDir = @WorkingDir
 
    ; 如果檔案只有一個，那就以該檔案為名字
    ; 如果檔案有很多個，那就取上層目錄為檔案名字
@@ -50,16 +43,49 @@ Func addArchive()
 
    ; ------------------------------------
 
-   ; @TODO 如果裡面只有一個資料夾，那把裡面的檔案搬出來後再來壓縮
+   If $CmdLine[0] = 1 Then
+	  uniqueDir($CmdLine[1])
+   EndIf
+
+   ; ----------------------------------
+   ; 建立列表
+   Local $fileList = ""
+   If $CmdLine[0] = 1 And StringInStr(FileGetAttrib($CmdLine[1]), "D") Then
+	  Local $trimLength = StringLen($CmdLine[1]) + 1
+	  $archiveFilename = '../' & $archiveFilename
+
+
+	  Local $subFileList = _FileListToArray($CmdLine[1])
+	  FileChangeDir($CmdLine[1])
+	  ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+	  For $i = 1 To $subFileList[0]
+		 ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+		 If FileExists($subFileList[$i]) Then
+			Local $f = $subFileList[$i]
+			$fileList = $fileList & ' "' & $f & '"'
+		 EndIf
+	  Next
+   Else
+
+	  For $i = 1 To $CmdLine[0]
+		 If FileExists($CmdLine[$i]) Then
+			$fileList = $fileList & ' "' & $CmdLine[$i] & '"'
+		 EndIf
+	  Next
+   EndIf
 
    ; ------------------------------------
 
    Local $cmd = $path7z & '  a -t' & $archiveFormat & ' -mx=9 ' & $archiveFilename & '.zip' & $fileList
+
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
+   ;Exit
+
    RunWait($cmd)
 
    ; ------------------------------------
 
+   FileChangeDir($workingDir)
    For $i = 1 To $CmdLine[0]
 	  FileRecycle($CmdLine[$i])
    Next
@@ -92,7 +118,7 @@ Func unarchive()
    RunWait($cmd)
 
    ; ------------------------------
-   ;FileRecycle($file)
+   FileRecycle($file)
 
    ; ------------------------------
    uniqueDir($sFileName)
@@ -100,9 +126,13 @@ Func unarchive()
 EndFunc
 
 Func uniqueDir($sFileName)
+   If StringInStr(FileGetAttrib($sFileName), "D") = False Then
+	  Return
+   EndIf
+
    Local $fileList = _FileListToArray($sFileName)
    If $fileList[0] = 1 And $fileList[1] = $sFileName Then
-	  ;MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
+	  MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
 
 	  Local $subFileList = _FileListToArray($sFileName & '/' & $sFileName)
 	  For $i = 1 To $subFileList[0]
@@ -130,6 +160,9 @@ Func uniqueDir($sFileName)
 EndFunc
 
 ; ------------------------------------
+
+;uniqueDir('testbbb')
+;Exit
 
 If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
    unarchive()
