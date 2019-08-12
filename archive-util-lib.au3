@@ -3,13 +3,18 @@
 #include <FileConstants.au3>
 #include <WinAPIFiles.au3>
 #include <Array.au3>
-#pragma compile(Icon, 'archive.ico')
 
-Local $archiveFormat = 'zip'
+;Local $archiveFormat = 'zip'
+;Local $archiveFormat = '7z'
 
 ; ----------------------------------
 
-Func addArchive()
+Func addArchive($archiveFormat)
+
+  If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
+     Return unarchive()
+  EndIf
+
    ; ----------------------------------
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
 
@@ -76,7 +81,7 @@ Func addArchive()
 
    ; ------------------------------------
 
-   Local $cmd = $path7z & '  a -t' & $archiveFormat & ' -mx=9 ' & $archiveFilename & '.zip' & $fileList
+   Local $cmd = $path7z & '  a -t' & $archiveFormat & ' -mx=9 ' & $archiveFilename & '.' & $archiveFormat & $fileList
 
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
@@ -160,12 +165,3 @@ Func uniqueDir($sFileName)
 EndFunc
 
 ; ------------------------------------
-
-;uniqueDir('testbbb')
-;Exit
-
-If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
-   unarchive()
-Else
-   addArchive()
-EndIf

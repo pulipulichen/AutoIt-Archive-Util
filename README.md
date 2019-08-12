@@ -15,4 +15,5 @@ https://felixx.pixnet.net/blog/post/36966417-7-zip的命令列指令
 ----
 # Resources
 
-Icon: https://findicons.com/icon/544391/archive
+7Zip Icon: https://icons8.com/icon/55192/7zip
+ZIP Icon: https://icons8.com/icon/46964/zip
