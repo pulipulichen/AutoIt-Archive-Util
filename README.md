@@ -12,6 +12,12 @@ https://felixx.pixnet.net/blog/post/36966417-7-zip的命令列指令
 
 7z e archive.zip
 
+archive-util-zip.exe "D:\Desktop\20190806 移除不使用的應用程式\test"
+
+archive-util-zip.exe "D:\Desktop\20190806 移除不使用的應用程式\test\AA A.txt"
+
+archive-util-zip.exe "D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A"
+
 ----
 # Resources
 

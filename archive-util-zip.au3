@@ -4,6 +4,6 @@
 #include <WinAPIFiles.au3>
 #include <Array.au3>
 #include <archive-util-lib.au3>
-#pragma compile(Icon, 'zip.svg.ico')
+#pragma compile(Icon, 'icons/zip.svg.ico')
 
 addArchive('zip')

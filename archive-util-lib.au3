@@ -10,10 +10,13 @@
 ; ----------------------------------
 
 Func addArchive($archiveFormat)
+   If $CmdLine = 0 Then
+	  Exit
+   EndIf
 
-  If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
-     Return unarchive()
-  EndIf
+   If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
+	 Return unarchive()
+   EndIf
 
    ; ----------------------------------
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
@@ -24,8 +27,14 @@ Func addArchive($archiveFormat)
 
    ; ----------------------------------
 
-   Local $archiveFilename
+   If $CmdLine[0] > 0 Then
+	  FileChangeDir(GetDir($CmdLine[1]))
+   EndIf
    Local $workingDir = @WorkingDir
+
+   ; ----------------------------------
+
+   Local $archiveFilename
 
    ; 如果檔案只有一個，那就以該檔案為名字
    ; 如果檔案有很多個，那就取上層目錄為檔案名字
@@ -33,20 +42,22 @@ Func addArchive($archiveFormat)
 	  ;MsgBox($MB_SYSTEMMODAL, "", "no file")
 	  Exit
    ElseIf $CmdLine[0] = 1 Then
-	  Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
-	  Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
+	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
+	  ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $sFileName)
-	  $archiveFilename = $sFileName
+	  $archiveFilename = GetFileName($CmdLine[1])
    Else
 	  ;MsgBox($MB_SYSTEMMODAL, "", "many files")
-	  Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
-	  Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
-	  $sDir = StringTrimRight($sDir, 1)
+	  ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
+	  ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
+	  ;$sDir = StringTrimRight($sDir, 1)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $sDir)
-	  $archiveFilename = $sDir
+	  $archiveFilename = GetDir($CmdLine[1])
    EndIf
 
    ; ------------------------------------
+
+   ;MsgBox($MB_SYSTEMMODAL, "", $workingDir)
 
    If $CmdLine[0] = 1 Then
 	  uniqueDir($CmdLine[1])
@@ -54,15 +65,22 @@ Func addArchive($archiveFormat)
 
    ; ----------------------------------
    ; 建立列表
+
+   ;MsgBox($MB_SYSTEMMODAL, "", StringInStr(FileGetAttrib($CmdLine[1]), "D"))
+
    Local $fileList = ""
    If $CmdLine[0] = 1 And StringInStr(FileGetAttrib($CmdLine[1]), "D") Then
 	  Local $trimLength = StringLen($CmdLine[1]) + 1
 	  $archiveFilename = '../' & $archiveFilename
 
-
 	  Local $subFileList = _FileListToArray($CmdLine[1])
 	  FileChangeDir($CmdLine[1])
 	  ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+	  ;MsgBox($MB_SYSTEMMODAL, "", @WorkingDir)
+	  If $subFileList[0] = 0 Then
+		 Exit
+	  EndIf
+
 	  For $i = 1 To $subFileList[0]
 		 ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
 		 If FileExists($subFileList[$i]) Then
@@ -70,23 +88,24 @@ Func addArchive($archiveFormat)
 			$fileList = $fileList & ' "' & $f & '"'
 		 EndIf
 	  Next
-   Else
 
+	  ;MsgBox($MB_SYSTEMMODAL, "fileList", $fileList)
+   Else
 	  For $i = 1 To $CmdLine[0]
 		 If FileExists($CmdLine[$i]) Then
-			$fileList = $fileList & ' "' & $CmdLine[$i] & '"'
+			$fileList = $fileList & ' "' & GetFileName($CmdLine[$i]) & '"'
 		 EndIf
 	  Next
    EndIf
 
    ; ------------------------------------
 
-   Local $cmd = $path7z & '  a -t' & $archiveFormat & ' -mx=9 ' & $archiveFilename & '.' & $archiveFormat & $fileList
+   Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
-   RunWait($cmd)
+   RunWait($cmd, '', @SW_HIDE)
 
    ; ------------------------------------
 
@@ -98,12 +117,47 @@ EndFunc
 
 ; ------------------------------------
 
+Func GetDir($sFilePath)
+    If Not IsString($sFilePath) Then
+        Return SetError(1, 0, -1)
+    EndIf
+
+    Local $FileDir = StringRegExpReplace($sFilePath, "\\[^\\]*$", "")
+
+    Return $FileDir
+ EndFunc
+
+ Func GetFileName($sFilePath)
+    If Not IsString($sFilePath) Then
+        Return SetError(1, 0, -1)
+    EndIf
+
+    Local $FileName = StringRegExpReplace($sFilePath, "^.*\\", "")
+
+    Return $FileName
+EndFunc
+
+; ------------------------------------
+
 Func unarchive()
+   If $CmdLine = 0 Then
+	  Exit
+   EndIf
+
+
    Local $file = $CmdLine[1]
    ;MsgBox($MB_SYSTEMMODAL, "", $file)
    If FileExists($file) = False Then
 	  Exit
    EndIf
+
+   ; ----------------------------
+
+
+   If $CmdLine[0] > 0 Then
+	  FileChangeDir(GetDir($CmdLine[1]))
+   EndIf
+   Local $workingDir = @WorkingDir
 
    ; ----------------------------
 
@@ -117,15 +171,18 @@ Func unarchive()
    ; ----------------------------
 
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
-   Local $cmd = $path7z & ' x ' & $file & ' -o' & $sFileName
+   Local $cmd = '"' & $path7z & '" x "' & $file & '" -o"' & $sFileName & '"'
+
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
-   RunWait($cmd)
+
+   RunWait($cmd, '', @SW_HIDE)
 
    ; ------------------------------
    FileRecycle($file)
 
    ; ------------------------------
+   ;MsgBox($MB_SYSTEMMODAL, $sFileName, 'Go uniqueDir')
    uniqueDir($sFileName)
 
 EndFunc
@@ -136,8 +193,10 @@ Func uniqueDir($sFileName)
    EndIf
 
    Local $fileList = _FileListToArray($sFileName)
-   If $fileList[0] = 1 And $fileList[1] = $sFileName Then
-	  MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
+   If $fileList[0] = 0 Or $fileList[0] > 1 Then
+	  Return
+   ElseIf $fileList[1] = $sFileName Then
+	  ;MsgBox($MB_SYSTEMMODAL, "", $fileList[1])
 
 	  Local $subFileList = _FileListToArray($sFileName & '/' & $sFileName)
 	  For $i = 1 To $subFileList[0]
@@ -155,12 +214,19 @@ Func uniqueDir($sFileName)
 			;DirMove($source, $target, 1)
 			If DirCopy($source,$target,1) Then DirRemove($source,1)
 		 Else
-			MsgBox($MB_SYSTEMMODAL, "file", $source)
+			;MsgBox($MB_SYSTEMMODAL, "file", $source)
 			FileMove($source, $sFileName, 1)
 		 EndIf
 	  Next
 	  FileRecycle($sFileName & '/' & $sFileName)
 	  uniqueDir($sFileName)
+   ElseIf StringInStr(FileGetAttrib($fileList[1]), "D") = False Then
+	  ; 單一檔案
+	  Local $source = $sFileName & '/' & $fileList[1]
+	  Local $dist = "./"
+	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source)
+	  FileMove($source, $dist)
+	  DirRemove($sFileName)
    EndIf
 EndFunc
 
