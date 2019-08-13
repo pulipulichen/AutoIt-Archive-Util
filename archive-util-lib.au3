@@ -23,15 +23,13 @@ Func addArchive($archiveFormat)
 	  Return addArchive($archiveFormat)
    EndIf
 
-   FileWrite($lockFile, "Archive is going now. Please wait.")
+   FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $CmdLine[1])
 
    ; ----------------------------------
 
    If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
 	  unarchive()
-	  If FileExists($lockFile) Then
-		 FileDelete($lockFile)
-	  EndIf
+	  unlock()
 	  Return
    EndIf
 
@@ -82,7 +80,10 @@ Func addArchive($archiveFormat)
    ;MsgBox($MB_SYSTEMMODAL, "", $workingDir)
 
    If $CmdLine[0] = 1 And StringInStr(FileGetAttrib($CmdLine[1]), "D") Then
-	  uniqueDir(GetFileName($CmdLine[1]))
+	  If uniqueDir(GetFileName($CmdLine[1])) = 0 Then
+		 unlock()
+		 Return
+	  EndIf
    EndIf
 
    ; ----------------------------------
@@ -139,13 +140,18 @@ Func addArchive($archiveFormat)
 	  FileRecycle($CmdLine[$i])
    Next
 
-   If FileExists($lockFile) Then
-	  FileDelete($lockFile)
-   EndIf
+   unlock()
 
 EndFunc
 
 ; ------------------------------------
+
+Func unlock()
+   Local $lockFile = @ScriptDir & '\lock.tmp'
+   If FileExists($lockFile) Then
+   	  FileDelete($lockFile)
+   EndIf
+EndFunc
 
 Func GetDir($sFilePath)
    If Not IsString($sFilePath) Then
@@ -257,7 +263,7 @@ Func uniqueDir($sFileName)
    Local $fileList = _FileListToArray($sFileName)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList[1])
    If $fileList = False Then
-	  Exit
+	  Return 0
    ElseIf $fileList[0] > 1 Then
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
