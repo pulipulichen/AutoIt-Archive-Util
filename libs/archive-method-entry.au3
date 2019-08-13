@@ -31,18 +31,23 @@ Func archiveMethodEntry($archiveFormat)
    ; ----------------------------------
 
    If $CmdLine[0] = 1 Then
-	  If (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 3) = '.7z') Then
-		 unarchive(True)
-		 unlock()
-		 Return
-	  ElseIf StringRight($CmdLine[1], 4) = '.rar' Then
+	  If StringRight($CmdLine[1], 4) = '.rar' Or ($archiveFormat = '7z' And StringRight($CmdLine[1], 4) = '.zip') Or ($archiveFormat = 'zip' And StringRight($CmdLine[1], 3) = '.7z') Then
 		 unarchive(False)
      ; 這裡就要清理完
 		 ;Exit
-		 $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
+     If $archiveFormat = 'zip' Then
+        $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 3)
+     Else
+        $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
+     EndIf
+		 
 		 ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $CmdLine[1])
 		 ;Exit
 		 addArchive($archiveFormat)
+		 unlock()
+		 Return
+    ElseIf (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 3) = '.7z') Then
+		 unarchive(True)
 		 unlock()
 		 Return
 	  Else

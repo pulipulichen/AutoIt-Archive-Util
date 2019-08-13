@@ -1,4 +1,5 @@
 Func uniqueDir($sFileName)
+   ;MsgBox($MB_SYSTEMMODAL, 'uniqueDir()', @WorkingDir & @CRLF & $sFileName & @CRLF & isDir($sFileName))
    If isDir($sFileName) = False Then
 	  Return False
    EndIf
@@ -6,7 +7,9 @@ Func uniqueDir($sFileName)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", @WorkingDir)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $sFileName)
    Local $fileList = _FileListToArray($sFileName)
-   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList[1])
+   
+   ;MsgBox($MB_SYSTEMMODAL, "uniqueDir()", $fileList[1])
+
    If $fileList = False Then
 	  unlock()
 	  Exit
@@ -41,8 +44,13 @@ Func uniqueDir($sFileName)
 	  Return uniqueDir($sFileName)
    ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") = False Then
 	  ; 單一檔案
-	  Local $source = $sFileName & '\' & $fileList[1]
-	  Local $dist = @WorkingDir
+    If $sFileName = $fileList[1] Then
+      DirMove($sFileName, $sFileName & '-tmp')
+      $sFileName = $sFileName & '-tmp'
+    EndIf
+
+	  Local $source = @WorkingDir & '\' & $sFileName & '\' & $fileList[1]
+	  Local $dist = @WorkingDir & '\'
 	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source & @CRLF & $dist)
 	  FileMove($source, $dist)
 	  DirRemove($sFileName)

@@ -47,6 +47,7 @@ Func unarchive($openSingleFile)
    ;Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
    ;Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
    ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $CmdLine[1])
+
    ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', @WorkingDir & @CRLF & $sFileName & @CRLF & $CmdLine[1])
 
    Local $singleFile = uniqueDir($sFileName)
