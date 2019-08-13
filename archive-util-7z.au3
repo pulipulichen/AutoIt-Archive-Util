@@ -6,4 +6,4 @@
 #include "libs/archive-method-entry.au3"
 #pragma compile(Icon, 'icons/7zip.svg.ico')
 
-archiveMethod('7z')
+archiveMethodEntry('7z')

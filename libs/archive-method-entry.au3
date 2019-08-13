@@ -26,7 +26,7 @@ Func archiveMethodEntry($archiveFormat)
    ; ----------------------------------
    ; 從這裡開始做一個lock
 
-   lock()
+   lock($archiveFormat)
    
    ; ----------------------------------
 

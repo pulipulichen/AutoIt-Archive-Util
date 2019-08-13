@@ -1,4 +1,4 @@
-Func lock()
+Func lock($archiveFormat)
    Local $lockFile = @ScriptDir & '\lock.tmp'
    If FileExists($lockFile) Then
 	  Sleep(3000)
