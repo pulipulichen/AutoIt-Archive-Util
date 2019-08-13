@@ -1,10 +1,3 @@
-#include <File.au3>
-#include <MsgBoxConstants.au3>
-#include <FileConstants.au3>
-#include <WinAPIFiles.au3>
-#include <Array.au3>
-
-
 Func lock()
    Local $lockFile = @ScriptDir & '\lock.tmp'
    If FileExists($lockFile) Then
