@@ -130,7 +130,7 @@ Func addArchive($archiveFormat)
 
    ;Sleep(10000)
 
-   RunWait($cmd, '')
+   RunWait($cmd, '', @SW_MINIMIZE)
 
    ; ------------------------------------
 
@@ -228,7 +228,7 @@ Func unarchive()
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
-   RunWait($cmd, '')
+   RunWait($cmd, '', @SW_MINIMIZE)
 
    ; ------------------------------
    FileRecycle($file)
