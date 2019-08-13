@@ -9,10 +9,14 @@
 
 ; ----------------------------------
 
-Func addArchive($archiveFormat)
+Func archiveMethod($archiveFormat)
    If $CmdLine = 0 Then
 	  Exit
    EndIf
+
+   ;$CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
+   ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+   ;Exit
 
    ; ----------------------------------
    ; 從這裡開始做一個lock
@@ -23,15 +27,36 @@ Func addArchive($archiveFormat)
 	  Return addArchive($archiveFormat)
    EndIf
 
-   FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $CmdLine[1])
+   ;FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $CmdLine[1])
 
    ; ----------------------------------
 
-   If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
-	  unarchive()
-	  unlock()
-	  Return
+   If $CmdLine[0] = 1 Then
+	  If (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 3) = '.7z') Then
+		 unarchive()
+		 unarchiveUnique()
+		 unlock()
+		 Return
+	  ElseIf StringRight($CmdLine[1], 4) = '.rar'  Then
+		 unarchive()
+		 ;Exit
+		 $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
+		 ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $CmdLine[1])
+		 ;Exit
+		 addArchive($archiveFormat)
+		 unlock()
+		 Return
+	  Else
+		 addArchive($archiveFormat)
+	  EndIf
+   Else
+	  addArchive($archiveFormat)
    EndIf
+EndFunc
+
+; ----------------------------------
+
+Func addArchive($archiveFormat)
 
    ; ----------------------------------
 
@@ -39,7 +64,7 @@ Func addArchive($archiveFormat)
 
    ;MsgBox($MB_SYSTEMMODAL, "", $fileList)
 
-   ;MsgBox($MB_SYSTEMMODAL, "", $path7z)
+   MsgBox($MB_SYSTEMMODAL, "", $path7z)
 
    ; ----------------------------------
 
@@ -98,43 +123,53 @@ Func addArchive($archiveFormat)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
 	  ;MsgBox($MB_SYSTEMMODAL, "", @WorkingDir)
 	  If $subFileList[0] = 0 Then
+		 MsgBox($MB_SYSTEMMODAL, @WorkingDir, "$subFileList[0] = 0")
+		 unlock()
 		 Exit
 	  EndIf
 
 	  For $i = 1 To $subFileList[0]
 		 ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+		 MsgBox($MB_SYSTEMMODAL, "", $subFileList[$i])
+
 		 If FileExists($subFileList[$i]) Then
 			Local $f = $subFileList[$i]
 			$fileList = $fileList & ' "' & $f & '"'
 		 EndIf
 	  Next
 
-	  ;MsgBox($MB_SYSTEMMODAL, "fileList", $fileList)
+	  MsgBox($MB_SYSTEMMODAL, "fileList", $fileList)
    Else
+	  MsgBox($MB_SYSTEMMODAL, "not dir", @WorkingDir)
 	  For $i = 1 To $CmdLine[0]
-		 If FileExists($CmdLine[$i]) Then
+		 ;MsgBox($MB_SYSTEMMODAL, FileExists(GetFileName($CmdLine[$i])), GetFileName($CmdLine[$i]))
+		 If FileExists(GetFileName($CmdLine[$i])) Then
 			$fileList = $fileList & ' "' & GetFileName($CmdLine[$i]) & '"'
 		 EndIf
 	  Next
+
    EndIf
 
    ; ------------------------------------
 
    Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
-   ;MsgBox($MB_SYSTEMMODAL, "", @WorkingDir)
-   ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
+   MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
+   ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
    ;Exit
 
    ;Sleep(10000)
 
-   RunWait($cmd, '', @SW_MINIMIZE)
+   If StringLen($fileList) > 0 Then
+	  RunWait($cmd, '', @SW_MINIMIZE)
+   EndIf
 
    ; ------------------------------------
 
    FileChangeDir($workingDir)
    For $i = 1 To $CmdLine[0]
-	  FileRecycle($CmdLine[$i])
+	  Local $file = GetFileName($CmdLine[$i])
+	  FileRecycle($file)
    Next
 
    unlock()
@@ -207,17 +242,19 @@ Func unarchive()
 
    ; ----------------------------
 
+   Local $workingDir = @WorkingDir
 
    If $CmdLine[0] > 0 Then
+	  $file = GetFileName($CmdLine[1])
+	  ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $file)
 	  FileChangeDir(GetDir($CmdLine[1]))
    EndIf
-   Local $workingDir = @WorkingDir
 
    ; ----------------------------
 
    ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
    ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
-   $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
+   Local $sFileName = GetFileNameNoExt($CmdLine[1])
 
    If FileExists($sFileName) = False Then
 	  DirCreate($sFileName)
@@ -228,7 +265,7 @@ Func unarchive()
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
    Local $cmd = '"' & $path7z & '" x "' & $file & '" -o"' & $sFileName & '"'
 
-   ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
+   ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
    ;Exit
 
    RunWait($cmd, '', @SW_MINIMIZE)
@@ -236,8 +273,11 @@ Func unarchive()
    ; ------------------------------
    FileRecycle($file)
 
-   ; ------------------------------
-   ;MsgBox($MB_SYSTEMMODAL, $sFileName, 'Go uniqueDir')
+   FileChangeDir($workingDir)
+EndFunc
+
+Func unarchiveUnique($sFileName)
+   Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
    Local $singleFile = uniqueDir($sFileName)
 
    If $singleFile <> False Then

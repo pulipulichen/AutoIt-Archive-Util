@@ -3,10 +3,10 @@
 #include <FileConstants.au3>
 #include <WinAPIFiles.au3>
 #include <Array.au3>
-#include <archive-util-lib.au3>
+#include <libs\archive-util-main.au3>
 #pragma compile(Icon, 'icons/zip.svg.ico')
 
-addArchive('zip')
+archiveMethod('zip')
 
 ;MsgBox($MB_SYSTEMMODAL, "", GetFileNameNoExt("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A.zip"))
 

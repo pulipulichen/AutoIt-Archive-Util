@@ -6,4 +6,4 @@
 #include <archive-util-lib.au3>
 #pragma compile(Icon, 'icons/7zip.svg.ico')
 
-addArchive('7z')
+archiveMethod('7z')
