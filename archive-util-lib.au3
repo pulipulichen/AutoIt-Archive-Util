@@ -14,11 +14,29 @@ Func addArchive($archiveFormat)
 	  Exit
    EndIf
 
+   ; ----------------------------------
+   ; 從這裡開始做一個lock
+
+   Local $lockFile = @ScriptDir & '\lock.tmp'
+   If FileExists($lockFile) Then
+	  Sleep(3000)
+	  Return addArchive($archiveFormat)
+   EndIf
+
+   FileWrite($lockFile, "Archive is going now. Please wait.")
+
+   ; ----------------------------------
+
    If $CmdLine[0] = 1 And (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 4) = '.rar' Or StringRight($CmdLine[1], 3) = '.7z') Then
-	 Return unarchive()
+	  unarchive()
+	  If FileExists($lockFile) Then
+		 FileDelete($lockFile)
+	  EndIf
+	  Return
    EndIf
 
    ; ----------------------------------
+
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
 
    ;MsgBox($MB_SYSTEMMODAL, "", $fileList)
@@ -110,6 +128,8 @@ Func addArchive($archiveFormat)
    ;MsgBox($MB_SYSTEMMODAL, "", $cmd)
    ;Exit
 
+   ;Sleep(10000)
+
    RunWait($cmd, '')
 
    ; ------------------------------------
@@ -118,6 +138,11 @@ Func addArchive($archiveFormat)
    For $i = 1 To $CmdLine[0]
 	  FileRecycle($CmdLine[$i])
    Next
+
+   If FileExists($lockFile) Then
+	  FileDelete($lockFile)
+   EndIf
+
 EndFunc
 
 ; ------------------------------------
@@ -211,7 +236,6 @@ Func unarchive()
    ; ------------------------------
    ;MsgBox($MB_SYSTEMMODAL, $sFileName, 'Go uniqueDir')
    uniqueDir($sFileName)
-
 EndFunc
 
 ; --------------------------------
