@@ -40,5 +40,5 @@ Func StripExt($FileName)
 EndFunc
 
 Func isDir($path)
-  Return StringInStr(FileGetAttrib($sFilePath), "D") = True
+  Return StringInStr(FileGetAttrib($path), "D") = True
 EndFunc

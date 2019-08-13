@@ -1,4 +1,4 @@
-Func unarchive()
+Func unarchive($openSingleFile)
    If $CmdLine = 0 Then
 	  Exit
    EndIf
@@ -41,19 +41,18 @@ Func unarchive()
    RunWait($cmd, '', @SW_MINIMIZE)
 
    ; ------------------------------
-   FileRecycle($file)
+   ;FileRecycle($file)
 
-   FileChangeDir($workingDir)
-EndFunc
-
-Func unarchiveUnique($sFileName)
-   Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
+   ;Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
+   Local $sFileName = GetFileNameNoExt($CmdLine[1])
+   ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $CmdLine[1])
+   MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', @WorkingDir & @CRLF & $sFileName & @CRLF & $CmdLine[1])
    Local $singleFile = uniqueDir($sFileName)
+   MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $singleFile)
 
-   If $singleFile <> False Then
-	  ;Local $openCmd = @comspec & ' /c start "' & $singleFile & '"'
-	  ;MsgBox($MB_SYSTEMMODAL, $singleFile, $openCmd)
-	  ;Run($openCmd)
+   If $openSingleFile = True And $singleFile <> False Then
 	  ShellExecute('"' & $singleFile & '"')
    EndIf
+
+   FileChangeDir($workingDir)
 EndFunc

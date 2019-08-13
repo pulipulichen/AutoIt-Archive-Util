@@ -2,7 +2,7 @@ Func lock()
    Local $lockFile = @ScriptDir & '\lock.tmp'
    If FileExists($lockFile) Then
 	  Sleep(3000)
-	  Return addArchive($archiveFormat)
+	  Return archiveMethodEntry($archiveFormat)
    EndIf
 
    Local $content = ""
@@ -10,7 +10,7 @@ Func lock()
     $content = $CmdLine[1]
    EndIf
 
-   FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $content)
+   ;FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $content)
 EndFunc
 
 Func unlock()

@@ -6,11 +6,14 @@ Func addArchive($archiveFormat)
 
    ;MsgBox($MB_SYSTEMMODAL, "", $fileList)
 
-   MsgBox($MB_SYSTEMMODAL, "", $path7z)
+   ;MsgBox($MB_SYSTEMMODAL, "", $path7z)
 
    ; ----------------------------------
 
-   If $CmdLine[0] > 0 Then
+   If $CmdLine[0] = 1 And isDir($CmdLine[1]) Then
+	  ; 這裡也要清理
+	  FileChangeDir(GetDir($CmdLine[1]))
+   ElseIf $CmdLine[0] > 0 Then
 	  FileChangeDir(GetDir($CmdLine[1]))
    EndIf
    Local $workingDir = @WorkingDir
@@ -80,9 +83,9 @@ Func addArchive($archiveFormat)
 		 EndIf
 	  Next
 
-	  MsgBox($MB_SYSTEMMODAL, "fileList", $fileList)
+	  ;MsgBox($MB_SYSTEMMODAL, "fileList", $fileList)
    Else
-	  MsgBox($MB_SYSTEMMODAL, "not dir", @WorkingDir)
+	  ;MsgBox($MB_SYSTEMMODAL, "not dir", @WorkingDir)
 	  For $i = 1 To $CmdLine[0]
 		 ;MsgBox($MB_SYSTEMMODAL, FileExists(GetFileName($CmdLine[$i])), GetFileName($CmdLine[$i]))
 		 If FileExists(GetFileName($CmdLine[$i])) Then
@@ -96,7 +99,7 @@ Func addArchive($archiveFormat)
 
    Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
-   MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
+   ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
    ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
    ;Exit
 
