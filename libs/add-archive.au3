@@ -75,7 +75,7 @@ Func addArchive($archiveFormat)
 
 	  For $i = 1 To $subFileList[0]
 		 ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
-		 MsgBox($MB_SYSTEMMODAL, "", $subFileList[$i])
+		 ;MsgBox($MB_SYSTEMMODAL, "", $subFileList[$i])
 
 		 If FileExists($subFileList[$i]) Then
 			Local $f = $subFileList[$i]

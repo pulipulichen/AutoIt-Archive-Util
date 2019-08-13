@@ -10,7 +10,7 @@ Func lock()
     $content = $CmdLine[1]
    EndIf
 
-   ;FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $content)
+   FileWrite($lockFile, "Archive is going now. Please wait." & @CRLF & $content)
 EndFunc
 
 Func unlock()
