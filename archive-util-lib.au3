@@ -80,10 +80,7 @@ Func addArchive($archiveFormat)
    ;MsgBox($MB_SYSTEMMODAL, "", $workingDir)
 
    If $CmdLine[0] = 1 And StringInStr(FileGetAttrib($CmdLine[1]), "D") Then
-	  If uniqueDir(GetFileName($CmdLine[1])) = 0 Then
-		 unlock()
-		 Return
-	  EndIf
+	  uniqueDir(GetFileName($CmdLine[1]))
    EndIf
 
    ; ----------------------------------
@@ -263,7 +260,8 @@ Func uniqueDir($sFileName)
    Local $fileList = _FileListToArray($sFileName)
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList[1])
    If $fileList = False Then
-	  Return 0
+	  unlock()
+	  Exit
    ElseIf $fileList[0] > 1 Then
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
