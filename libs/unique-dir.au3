@@ -41,9 +41,9 @@ Func uniqueDir($sFileName)
 	  Return uniqueDir($sFileName)
    ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") = False Then
 	  ; 單一檔案
-	  Local $source = $sFileName & '/' & $fileList[1]
+	  Local $source = $sFileName & '\' & $fileList[1]
 	  Local $dist = @WorkingDir
-	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source)
+	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source & @CRLF & $dist)
 	  FileMove($source, $dist)
 	  DirRemove($sFileName)
 

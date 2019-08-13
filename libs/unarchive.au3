@@ -24,7 +24,7 @@ Func unarchive($openSingleFile)
 
    ;Local $sDrive = "", $sDir = "", $sFileName = "", $sExtension = ""
    ;Local $aPathSplit = _PathSplit($CmdLine[1], $sDrive, $sDir, $sFileName, $sExtension)
-   Local $sFileName = GetFileNameNoExt($CmdLine[1])
+   Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
 
    If FileExists($sFileName) = False Then
 	  DirCreate($sFileName)
@@ -40,15 +40,17 @@ Func unarchive($openSingleFile)
 
    RunWait($cmd, '', @SW_MINIMIZE)
 
+   FileRecycle($file)
+
    ; ------------------------------
-   ;FileRecycle($file)
+
 
    ;Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
-   Local $sFileName = GetFileNameNoExt($CmdLine[1])
+   ;Local $sFileName = stripExt(GetFileNameNoExt($CmdLine[1]))
    ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $CmdLine[1])
-   MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', @WorkingDir & @CRLF & $sFileName & @CRLF & $CmdLine[1])
+   ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', @WorkingDir & @CRLF & $sFileName & @CRLF & $CmdLine[1])
    Local $singleFile = uniqueDir($sFileName)
-   MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $singleFile)
+   ;MsgBox($MB_SYSTEMMODAL, 'unarchiveUnique()', $singleFile)
 
    If $openSingleFile = True And $singleFile <> False Then
 	  ShellExecute('"' & $singleFile & '"')

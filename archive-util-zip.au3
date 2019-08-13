@@ -11,3 +11,6 @@ archiveMethodEntry('zip')
 ;MsgBox($MB_SYSTEMMODAL, "", GetFileNameNoExt("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\.AA A.zip"))
 
 ;FileMove("D:\xampp\htdocs\autoit_projects\AutoIt-Archive-Util\AA A.txt\AA A.txt", @WorkingDir)
+
+;FileChangeDir("D:\xampp\htdocs\projects-autoit\AutoIt-Archive-Util\test")
+;FileMove("BB B\BB B.txt", "D:\xampp\htdocs\projects-autoit\AutoIt-Archive-Util\test")

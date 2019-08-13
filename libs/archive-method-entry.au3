@@ -38,7 +38,7 @@ Func archiveMethodEntry($archiveFormat)
 	  ElseIf StringRight($CmdLine[1], 4) = '.rar' Then
 		 unarchive(False)
      ; 這裡就要清理完
-		 Exit
+		 ;Exit
 		 $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
 		 ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $CmdLine[1])
 		 ;Exit
