@@ -235,14 +235,21 @@ Func unarchive()
 
    ; ------------------------------
    ;MsgBox($MB_SYSTEMMODAL, $sFileName, 'Go uniqueDir')
-   uniqueDir($sFileName)
+   Local $singleFile = uniqueDir($sFileName)
+
+   If $singleFile <> False Then
+	  ;Local $openCmd = @comspec & ' /c start "' & $singleFile & '"'
+	  ;MsgBox($MB_SYSTEMMODAL, $singleFile, $openCmd)
+	  ;Run($openCmd)
+	  ShellExecute('"' & $singleFile & '"')
+   EndIf
 EndFunc
 
 ; --------------------------------
 
 Func uniqueDir($sFileName)
    If StringInStr(FileGetAttrib($sFileName), "D") = False Then
-	  Return
+	  Return False
    EndIf
 
    ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", @WorkingDir)
@@ -254,7 +261,7 @@ Func uniqueDir($sFileName)
    ElseIf $fileList[0] > 1 Then
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
 	  ;MsgBox($MB_SYSTEMMODAL, "uniqueDir", $fileList)
-	  Return
+	  Return False
    ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") And $fileList[1] = $sFileName Then
 	  ;MsgBox($MB_SYSTEMMODAL, "dir", $fileList[1])
 
@@ -279,7 +286,7 @@ Func uniqueDir($sFileName)
 		 EndIf
 	  Next
 	  FileRecycle($sFileName & '/' & $sFileName)
-	  uniqueDir($sFileName)
+	  Return uniqueDir($sFileName)
    ElseIf StringInStr(FileGetAttrib($sFileName & '/' & $fileList[1]), "D") = False Then
 	  ; 單一檔案
 	  Local $source = $sFileName & '/' & $fileList[1]
@@ -287,6 +294,8 @@ Func uniqueDir($sFileName)
 	  ;MsgBox($MB_SYSTEMMODAL, "single file", $source)
 	  FileMove($source, $dist)
 	  DirRemove($sFileName)
+
+	  Return $dist & "\" & $fileList[1]
    EndIf
 EndFunc
 
