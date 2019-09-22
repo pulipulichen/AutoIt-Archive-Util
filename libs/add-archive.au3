@@ -1,3 +1,5 @@
+#include <Array.au3>
+
 Func addArchive($archiveFormat)
 
    ; ----------------------------------
@@ -43,7 +45,27 @@ Func addArchive($archiveFormat)
 	  ;$sDir = StringTrimRight($sDir, 1)
 	  ;MsgBox($MB_SYSTEMMODAL, "", $sDir)
 	  $archiveFilename = GetDir($CmdLine[1])
+
+    ; 檢查這個資料夾裡面，除了指定的檔案之外，還有沒有其他的資料
+    local $hasOtherFiles = False
+    Local $subFileList = _FileListToArray($archiveFilename)
+    For $i = 1 To $subFileList[0]
+      Local $search = $archiveFilename & '\' & $subFileList[$i]
+
+      ;MsgBox($MB_SYSTEMMODAL, _ArraySearch($subFileList, $search), $search)
+      If _ArraySearch($CmdLine, $search) = -1 Then
+        $hasOtherFiles = True
+        ;MsgBox($MB_SYSTEMMODAL, "", $search)
+        ExitLoop
+      EndIf
+    Next
+    If $hasOtherFiles = True Then
+      $archiveFilename = $archiveFilename & '\' & GetFileName($archiveFilename)
+    EndIf
    EndIf
+
+   ;MsgBox($MB_SYSTEMMODAL, "", $archiveFilename)
+   ;Exit
 
    ; ------------------------------------
 
