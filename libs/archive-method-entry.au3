@@ -14,23 +14,24 @@
 
 ; ----------------------------------
 
-Func archiveMethodEntry($archiveFormat)
+Func archiveMethodEntry($archiveFormat, $codePage = False)
    If $CmdLine = 0 Then
 	  Exit
    EndIf
 
    ;$CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
-   ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
+   ;MsgBox($MB_SYSTEMMODAL, "1", $CmdLine[0])
    ;Exit
 
    ; ----------------------------------
    ; 從這裡開始做一個lock
 
    lock($archiveFormat)
-   
+
    ; ----------------------------------
 
    If $CmdLine[0] = 1 Then
+    ;MsgBox($MB_SYSTEMMODAL, "2", $CmdLine[1])
 	  If StringRight($CmdLine[1], 4) = '.rar' Or ($archiveFormat = '7z' And StringRight($CmdLine[1], 4) = '.zip') Or ($archiveFormat = 'zip' And StringRight($CmdLine[1], 3) = '.7z') Then
 		 unarchive(False)
      ; 這裡就要清理完
@@ -40,14 +41,15 @@ Func archiveMethodEntry($archiveFormat)
      Else
         $CmdLine[1] = StringMid($CmdLine[1], 1, StringLen($CmdLine[1]) - 4)
      EndIf
-		 
+
 		 ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $CmdLine[1])
 		 ;Exit
 		 addArchive($archiveFormat)
 		 unlock()
 		 Return
     ElseIf (StringRight($CmdLine[1], 4) = '.zip' Or StringRight($CmdLine[1], 3) = '.7z') Then
-		 unarchive(True)
+
+		 unarchive(True, $codePage)
 		 unlock()
 		 Return
 	  Else
