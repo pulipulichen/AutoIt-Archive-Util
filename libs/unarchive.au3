@@ -32,8 +32,8 @@ Func unarchive($openSingleFile, $codePage = False)
    ; ----------------------------
 
    Local $path7z = @ScriptDir & '\7-zip\7z.exe'
-   Local $cmd = '"' & $path7z & '" x "' & $file & '" -aoa -o"' & $sFileName & '" -mcu=on'
-    
+   Local $cmd = '"' & $path7z & '" x "' & $file & '" -aoa -o"' & $sFileName & '"'
+
    If $codePage = True Then
     Local $codePageNumber = InputBox("Code Page", "Please select a code page ID (charset): " & @CRLF & "BIG5=950 GBK=936 JP=932 KOREA=949 RU=866 UTF-8=65001" & @CRLF& "Full code page list: https://bit.ly/3w5dDCn", "932")
 
