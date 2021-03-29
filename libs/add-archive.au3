@@ -119,7 +119,7 @@ Func addArchive($archiveFormat)
 
    ; ------------------------------------
 
-   Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
+   Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mcu=on -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
    ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
    ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])

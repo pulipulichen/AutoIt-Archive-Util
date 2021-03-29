@@ -10,7 +10,7 @@ Func lock($archiveFormat)
    EndIf
 
    If FileExists($lockFile) Then
-    $result = MsgBox ( $MB_OKCANCEL, "Another archive is processing", "Do you want to process file directly? " & @CRLF & "File: " & $content , 3 )
+    $result = MsgBox ( $MB_OKCANCEL, "Another archive is processing", "Do you want to process file directly? " & @CRLF & "File: " & $content & @CRLF & "Cancel in 3 seconds.", 3 )
 	  ;Sleep(3000)
     ;MsgBox ( $MB_SYSTEMMODAL, "Another archive is processing", $result , 3 )
     If $result = 1 Then
