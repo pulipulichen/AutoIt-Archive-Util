@@ -121,7 +121,11 @@ Func addArchive($archiveFormat)
 
    Local $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mcu=on -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
 
-   ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, $cmd)
+   If $archiveFormat = "7z" Then
+	  $cmd = '"' & $path7z & '" a -t' & $archiveFormat & ' -mx=9 "' & $archiveFilename & '.' & $archiveFormat & '"' & $fileList
+   EndIf
+
+   ;MsgBox($MB_SYSTEMMODAL, @WorkingDir, @WorkingDir & @CRLF & @CRLF & $cmd)
    ;MsgBox($MB_SYSTEMMODAL, "", $CmdLine[1])
    ;Exit
 
@@ -135,8 +139,11 @@ Func addArchive($archiveFormat)
 
    FileChangeDir($workingDir)
    For $i = 1 To $CmdLine[0]
-	  Local $file = GetFileName($CmdLine[$i])
-	  FileRecycle($file)
+	  Local $file = $CmdLine[$i]
+	  ;MsgBox($MB_SYSTEMMODAL, "FileRecycle", @WorkingDir & @CRLF & @CRLF & $file & @CRLF & @CRLF & FileExists($file))
+	  If FileExists($file) Then
+		 FileRecycle($file)
+	  EndIf
    Next
 
    unlock()
